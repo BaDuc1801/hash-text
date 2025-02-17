@@ -10,8 +10,8 @@ function App() {
   const [messageApi, contextHolder] = message.useMessage();
 
   const onEncrypt = (values) => {
-    if (!values.secretKey) {
-      return messageApi.error("Vui lòng nhập khóa bí mật trước khi mã hóa!");
+    if (values.secretKey !== "123") {
+      return messageApi.error("Khóa bí mật để mã hóa phải là 123!");
     }
     const encrypted = CryptoJS.AES.encrypt(values.text, values.secretKey).toString();
     setEncryptedText(encrypted);
@@ -19,11 +19,11 @@ function App() {
   };
 
   const onDecrypt = (values) => {
-    if (!values.secretKey) {
-      return messageApi.error("Vui lòng nhập khóa bí mật trước khi giải mã!");
+    if (values.secretKey !== "321") {
+      return messageApi.error("Khóa bí mật để giải mã phải là 321!");
     }
     try {
-      const bytes = CryptoJS.AES.decrypt(values.encryptedText, values.secretKey);
+      const bytes = CryptoJS.AES.decrypt(values.encryptedText, "123"); // Giải mã luôn phải dùng khóa "123"
       const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
 
       if (!decryptedText) {
@@ -50,7 +50,7 @@ function App() {
             <Form form={formEncrypt} onFinish={onEncrypt} layout="vertical" className="bg-white w-[500px] p-5 rounded-lg">
               <p className="text-center font-semibold text-xl">Mã hóa</p>
               <Form.Item name="secretKey" label="Khóa bí mật">
-                <Input.Password placeholder="Nhập khóa bí mật" />
+                <Input.Password placeholder="Nhập khóa bí mật (123)" />
               </Form.Item>
               <Form.Item name="text" label="Nhập text">
                 <Input.TextArea rows={4} placeholder="Nhập nội dung cần mã hóa" />
@@ -72,7 +72,7 @@ function App() {
             <Form form={formDecrypt} onFinish={onDecrypt} layout="vertical" className="bg-white w-[500px] p-5 rounded-lg">
               <p className="text-center font-semibold text-xl">Giải mã</p>
               <Form.Item name="secretKey" label="Khóa bí mật">
-                <Input.Password placeholder="Nhập khóa bí mật" />
+                <Input.Password placeholder="Nhập khóa bí mật (321)" />
               </Form.Item>
               <Form.Item name="encryptedText" label="Nhập text đã mã hóa">
                 <Input.TextArea rows={4} placeholder="Nhập chuỗi đã mã hóa" />
@@ -91,7 +91,6 @@ function App() {
           </Col>
         </Row>
       </div>
-
     </div>
   );
 }
